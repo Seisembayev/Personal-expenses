@@ -4,8 +4,12 @@ import 'package:intl/intl.dart';
 
 class TransactionList extends StatelessWidget {
   final List<Transaction> transactions;
+  final Function deleteTx;
 
-  TransactionList(this.transactions);
+  TransactionList(
+    this.transactions,
+    this.deleteTx,
+  );
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -29,48 +33,33 @@ class TransactionList extends StatelessWidget {
           : ListView(
               children: transactions.map((tx) {
               return Card(
-                child: Row(
-                  children: <Widget>[
-                    Container(
-                      margin: EdgeInsets.symmetric(
-                        vertical: 20,
-                        horizontal: 25,
-                      ),
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: Theme.of(context).primaryColor,
-                          width: 2,
-                        ),
-                      ),
-                      padding: EdgeInsets.all(10),
-                      child: Text(
-                        '\$${tx.amount.toStringAsFixed(2)}',
-                        style: TextStyle(
-                          color: Theme.of(context).primaryColor,
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
+                margin: EdgeInsets.symmetric(
+                  vertical: 8,
+                  horizontal: 5,
+                ),
+                elevation: 5,
+                child: ListTile(
+                  leading: CircleAvatar(
+                    radius: 30,
+                    child: Padding(
+                      padding: EdgeInsets.all(6),
+                      child: FittedBox(
+                        child: Text('\$${tx.amount}'),
                       ),
                     ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Text(
-                          tx.title,
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 17,
-                          ),
-                        ),
-                        Text(
-                          DateFormat.yMMMd().format(tx.date),
-                          style: TextStyle(
-                            color: Colors.grey,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
+                  ),
+                  title: Text(
+                    tx.title,
+                    style: Theme.of(context).textTheme.title,
+                  ),
+                  subtitle: Text(
+                    DateFormat.yMMMd().format(tx.date),
+                  ),
+                  trailing: IconButton(
+                    icon: Icon(Icons.delete),
+                    color: Theme.of(context).errorColor,
+                    onPressed: () => deleteTx(tx.id),
+                  ),
                 ),
               );
             }).toList()),
